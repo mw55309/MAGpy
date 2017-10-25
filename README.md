@@ -1,7 +1,7 @@
 # MAGpy
-Snakemake pipeline for annotating metagenome-assembled genomes (MAGs) (pronounced mag-pie)
+MAGpy is a Snakemake pipeline for annotating metagenome-assembled genomes (MAGs) (pronounced **mag-pie**)
 
-MAGpy (pronounced mag-pie) takes as input a directory of FASTA files (with the extension .fa).  Each FASTA file should contain contigs that make up a Metagenome-Assembled Genome, or MAG.  MAGpy the runs a range of software tools that help annotate and characterise those genomes.  Specifically:
+MAGpy takes as input a directory of FASTA files (with the extension .fa).  Each FASTA file should contain contigs that make up a **M**etagenome-**A**ssembled **G**enome, or MAG.  MAGpy the runs a range of software tools that help annotate and characterise those genomes.  Specifically:
 
 * CheckM is run to characterise genome completeness and contamination
 * Sourmash is used to compare the genomes to RefSeq and GenBank genomes
