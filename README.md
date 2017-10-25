@@ -57,6 +57,37 @@ Here is what MAGpy attempts to do:
 * When finished, it attempts to ```mv``` the output folder back to the original directory
 * MAGpy then changes back to the original working directory
 
+Now obviously this is a bit, erm, hacky but as long as permissions are set on the PhyloPhlAn directory correctly, it should work.
+
+
+## Abstraction of executables
+
+Here in Edinburgh, access to software on the cluster nodes is controlled by the ```module``` command.  So, if you want to run Samtools it's
+
+```sh
+module load samtools
+
+samtools view my.bam
+```
+
+This isn't easy to integrate into Snakemake for every command, so what we have done is created a shell script for each software tool we need to use.  The sole purpose of that shell script is to set the correct enviornment for the tool to run, and then to run the tool with the arguments passed to the shell script.
+
+So our shell script for Samtools would be:
+
+```sh
+#!/bin/bash
+
+module load samtools
+
+samtools $@
+```
+
+This needs to be **executable** and it needs to be in the PATH of whichever user runs the tool.
+
+So basically, what you need to do is edit the shell scripts such that they set the correct environment for the tool in question and then run the tool on your specific set up.
+
+MAGpy then uses these shell scripts, rather than the executables themselves
+
 
 ## Dependencies
 * Snakemake (tested with 4.1.0)
