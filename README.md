@@ -1,7 +1,7 @@
 # MAGpy
 MAGpy is a Snakemake pipeline for annotating metagenome-assembled genomes (MAGs) (pronounced **mag-pie**)
 
-MAGpy takes as input a directory of FASTA files (with the extension .fa).  Each FASTA file should contain contigs that make up a **M**etagenome-**A**ssembled **G**enome, or MAG.  MAGpy the runs a range of software tools that help annotate and characterise those genomes.  Specifically:
+MAGpy takes as input a directory of FASTA files (with the extension .fa).  Each FASTA file should contain contigs that make up a **M**etagenome-**A**ssembled **G**enome, or MAG.  MAGpy then runs a range of software tools that help annotate and characterise those genomes.  Specifically:
 
 * CheckM is run to characterise genome completeness and contamination
 * Sourmash is used to compare the genomes to RefSeq and GenBank genomes
@@ -11,6 +11,32 @@ MAGpy takes as input a directory of FASTA files (with the extension .fa).  Each 
 * Ete3 scripts are used to update taxonomic annotations with full(er) lineages
 * PhyloPhlAn is used to generate a tree from the genomes
 * GraPhlAn is used to draw the tree using annotations previously generated [not yet implemented]
+
+## How to run
+
+Snakemake can be run in basic mode by running:
+
+```sh
+snakemake -s /path/to/MAGpy
+```
+
+Outputs will be placed into the *current working directory*, so make sure you have write access.
+
+To test which commands snakemake will run, you can try:
+
+```sh
+snakemake -np -s /path/to/MAGpy
+```
+
+However, on any serious number of MAGs, this basic operation will take a very long time as each job will be run in serial (i.e. one after the other).  However, snakemake has the ability to submit to most HPC clusters.  There are some instructions [here](http://snakemake.readthedocs.io/en/stable/tutorial/additional_features.html#cluster-execution).  
+
+Here at Edinbugh, we run an SGE cluster and this is how we run MAGpy on the cluster:
+
+```sh
+snakemake --cluster-config MAGpy.json --cluster "qsub -cwd -pe sharedmem {cluster.core} -l h_vmem={cluster.vmem} -P {cluster.proj}" --jobs 1000
+```
+
+This mode looks into the MAGpy.json file for cluster configurations relating to each type of job; the jobs are "rules" within the MAGpy snakefile.
 
 
 ## Dependencies
