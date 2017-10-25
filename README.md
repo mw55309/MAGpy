@@ -43,18 +43,18 @@ This mode looks into the MAGpy.json file for cluster configurations relating to 
 
 OK, this is a bit complex.  Essentially, PhyloPhlAn has a few foibles, which are:
 
-* input to PhyloPhlAn **has to be** placed in the input/ directory contains within the PhyloPhlAn install directory
-* output from PhyloPhlAn is written to the output/ directory within the PhyloPhlAn install directory
+* input to PhyloPhlAn **has to be** placed in the ```input/``` directory contains within the PhyloPhlAn install directory
+* output from PhyloPhlAn is written to the ```output/``` directory within the PhyloPhlAn install directory
 * The PhyloPhlAn process **has to be run** from the root of the PhyloPhlAn install directory
 
-Therefore, whatever user is running the MAGpy process, whether it be on a cluster or a single machine, must have read and write access to the input/ and output/ directories in the PhyloPhlAn install directory
+Therefore, whatever user is running the MAGpy process, whether it be on a cluster or a single machine, must have read and write access to the ```input/``` and ```output/``` directories in the PhyloPhlAn install directory
 
 Here is what MAGpy attempts to do:
 
-* It attempts to create a symbolic link from the input/ directory to the newly created proteins directory using ```ln -s```
+* It attempts to create a symbolic link from the ```input/``` directory to the newly created proteins directory using ```ln -s```
 * It then attempts to ```cd``` into the PhyloPhlAn install directory
 * From there, it runs PhyloPhlAn
-* When finished, it attempts to ```mv``` the output folder back to the original directory
+* When finished, it attempts to ```mv``` the results folder back to the original directory (to folder ```tree```)
 * MAGpy then changes back to the original working directory
 
 Now obviously this is a bit, erm, hacky but as long as permissions are set on the PhyloPhlAn directory correctly, it should work.
@@ -84,9 +84,7 @@ samtools $@
 
 This needs to be **executable** and it needs to be in the PATH of whichever user runs the tool.
 
-So basically, what you need to do is edit the shell scripts such that they set the correct environment for the tool in question and then run the tool on your specific set up.
-
-MAGpy then uses these shell scripts, rather than the executables themselves
+So basically, what you need to do is edit the shell scripts such that they set the correct environment for the tool in question and then run the tool on your specific set up.  Then you need to but these in your PATH and MAGpy then runs these shell scripts, rather than the executables themselves. This allows a lot of flexibility for running MAGpy on a range of different set-ups
 
 
 ## Dependencies
