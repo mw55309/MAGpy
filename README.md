@@ -39,6 +39,25 @@ snakemake --cluster-config MAGpy.json --cluster "qsub -cwd -pe sharedmem {cluste
 This mode looks into the MAGpy.json file for cluster configurations relating to each type of job; the jobs are "rules" within the MAGpy snakefile.
 
 
+## The integration of PhyloPhlAn
+
+OK, this is a bit complex.  Essentially, PhyloPhlAn has a few foibles, which are:
+
+* input to PhyloPhlAn **has to be** placed in the input/ directory contains within the PhyloPhlAn install directory
+* output from PhyloPhlAn is written to the output/ directory within the PhyloPhlAn install directory
+* The PhyloPhlAn process **has to be run** from the root of the PhyloPhlAn install directory
+
+Therefore, whatever user is running the MAGpy process, whether it be on a cluster or a single machine, must have read and write access to the input/ and output/ directories in the PhyloPhlAn install directory
+
+Here is what MAGpy attempts to do:
+
+* It attempts to create a symbolic link from the input/ directory to the newly created proteins directory using ```ln -s```
+* It then attempts to ```cd``` into the PhyloPhlAn install directory
+* From there, it runs PhyloPhlAn
+* When finished, it attempts to ```mv``` the output folder back to the original directory
+* MAGpy then changes back to the original working directory
+
+
 ## Dependencies
 * Snakemake (tested with 4.1.0)
 * Python (tested with 2.7.5)
