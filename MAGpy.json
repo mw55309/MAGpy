@@ -1,0 +1,51 @@
+{
+    "__default__" :
+    {
+        "core" : "1",
+        "time" : "01:00:00",
+        "vmem" : "4G",
+        "proj" : "roslin_faang"
+    },
+    "diamond" :
+    {
+        "core" : "16",
+        "time" : "24:00:00",
+        "vmem" : "16G",
+        "proj" : "roslin_faang"
+    },
+    "checkm" :
+    {
+        "core" : "16",
+        "time" : "24:00:00",
+        "vmem" : "16G",
+        "proj" : "roslin_faang"
+    },
+    "phylophlan_link" :
+    {
+        "core" : "16",
+        "time" : "08:00:00",
+        "vmem" : "16G",
+        "proj" : "roslin_faang"
+    },
+    "pfam_scan" :
+    {
+        "core" : "8",
+        "time" : "12:00:00",
+        "vmem" : "8G",
+        "proj" : "roslin_faang"
+    },
+    "sourmash_sig" :
+    {
+        "core" : "1",
+        "time" : "08:00:00",
+        "vmem" : "4G",
+        "proj" : "roslin_faang"
+    },
+    "sourmash_gather" :
+    {
+        "core" : "1",
+        "time" : "12:00:00",
+        "vmem" : "4G",
+        "proj" : "roslin_faang"
+    }
+}
