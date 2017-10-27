@@ -33,7 +33,7 @@ However, on any serious number of MAGs, this basic operation will take a very lo
 Here at Edinbugh, we run an SGE cluster and this is how we run MAGpy on the cluster:
 
 ```sh
-snakemake --cluster-config MAGpy.json --cluster "qsub -cwd -pe sharedmem {cluster.core} -l h_vmem={cluster.vmem} -P {cluster.proj}" --jobs 1000
+snakemake --cluster-config MAGpy.json --cluster "qsub -cwd -pe sharedmem {cluster.core} -l h_rt= {cluster.time} -l h_vmem={cluster.vmem} -P {cluster.proj}" --jobs 1000
 ```
 
 This mode looks into the MAGpy.json file for cluster configurations relating to each type of job; the jobs are "rules" within the MAGpy snakefile.
