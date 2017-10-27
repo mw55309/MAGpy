@@ -82,9 +82,14 @@ module load samtools
 samtools $@
 ```
 
-This needs to be **executable** and it needs to be in the PATH of whichever user runs the tool.
+(we don't use Samtools, this is just an example!)
 
 So basically, what you need to do is edit the shell scripts such that they set the correct environment for the tool in question and then run the tool on your specific set up.  Then you need to but these in your PATH and MAGpy then runs these shell scripts, rather than the executables themselves. This allows a lot of flexibility for running MAGpy on a range of different set-ups
+
+
+## Databases and data sources
+
+MAGpy needs to know about the location of various diamond databases, Pfam etc.  You will also need to edit MAGpy to point to these resources.
 
 
 ## Dependencies
@@ -101,9 +106,11 @@ So basically, what you need to do is edit the shell scripts such that they set t
 * Diamond (tested with 0.8.22)
 * Sourmash (tested with 2.0.0a1)
 * PhyloPhlAn (tested with 0.99)
+* pfam_scan.pl (tested on 1.6)
 
 
 ## Requirements
 * UniProt TrEMBL and/or Swiss-prot, formatted for searching by Diamond
 * Sourmash indices for both RefSeq and GenBank genomes
+* Pfam - needs to be pressed with hmmpress, see pfam_scan.pl help
 
