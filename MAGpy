@@ -43,7 +43,9 @@ rule sourmash_gather:
         output:
                 csv='sourmash/{id}.csv',
                 out='sourmash/{id}.sm'
-	shell: "sourmash.sh gather -k 31 {input} {params.gb} -o {params.outdir}/{id}.gb.csv > {params.outdir}/{id}.gb.csv"
+	params:
+		gb="/full/path/to/genbank-k31.sbt.json",
+	shell: "sourmash.sh gather -k 31 {input} {params.gb} -o {output.out} > {output.csv}"
 
 rule pfam_scan:
 	input: 'proteins/{id}.faa'
