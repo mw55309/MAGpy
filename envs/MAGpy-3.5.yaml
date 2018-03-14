@@ -1,0 +1,18 @@
+name: MAGpy-3.5
+channels:
+  - anaconda
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - snakemake=3.13.3=py35_0
+  - ete3=3.1.1=py35_0
+  - hmmer=3.1b2=3
+  - pplacer=1.1.alpha17=0
+  - prodigal=2.6.3=0
+  - fasttree=2.1.10=0
+  - diamond=0.9.14=1
+  - biopython=1.70=np112py35_1
+  - sourmash=2.0.0a4=py35_0
+  - pfam_scan=1.6=pl5.22.0_1
+

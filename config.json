@@ -1,0 +1,6 @@
+{
+    "phylophlan_dir": "/home/ubuntu/phylophlan",
+    "uniprot_sprot": "/home/ubuntu/uniprot_sprot",
+    "sourmash_gbk": "/home/ubuntu/genbank-k31.sbt.json",
+    "pfam_dir": "/home/ubuntu/"
+}

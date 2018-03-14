@@ -1,0 +1,16 @@
+name: MAGpy-2.7
+channels:
+  - anaconda
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - checkm-genome=1.0.7=py27_0
+  - pplacer=1.1.alpha17=0
+  - fasttree=2.1.10=0
+  - graphlan=1.0.0=py27_1
+  - muscle=3.8.1551=2
+  - hmmer=3.1b2=3
+  - prodigal=2.6.3=0
+  - mercurial=4.5=py27h14c3975_0
+

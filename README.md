@@ -1,6 +1,8 @@
 # MAGpy
 MAGpy is a Snakemake pipeline for annotating metagenome-assembled genomes (MAGs) (pronounced **mag-pie**)
 
+**NOTE MAGpy is in "alpha" status.  We like to release early and often.  MAGpy works on our system and was used in https://doi.org/10.1101/162578 but we cannot guarantee it will work on your system.  We may not have enough resource at present to help you get it to work on your system either, sorry, but we will try**
+
 MAGpy takes as input a directory of FASTA files (with the extension .fa).  Each FASTA file should contain contigs that make up a **M**etagenome-**A**ssembled **G**enome, or MAG.  MAGpy then runs a range of software tools that help annotate and characterise those genomes.  Specifically:
 
 * CheckM is run to characterise genome completeness and contamination
@@ -107,6 +109,9 @@ MAGpy needs to know about the location of various diamond databases, Pfam etc.  
 * Sourmash (tested with 2.0.0a1)
 * PhyloPhlAn (tested with 0.99)
 * pfam_scan.pl (tested on 1.6)
+* Color::Mix
+* BioPython
+* GraPhlAn
 
 
 ## Requirements

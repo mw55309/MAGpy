@@ -1,16 +1,25 @@
 shell.executable("/bin/bash")
 shell.prefix("source $HOME/.bashrc; ")
 
+configfile: "config.json"
+
 IDS, = glob_wildcards("mags/{id}.fa")
 
 rule all:
-	input: 'output.txt'
+	 input: "sourmash_report.csv", "MAGpy.tree.tree.genus.png", "diamond_bin_report_plus.tsv", expand("pfam/{sample}.pfam", sample=IDS), expand("sourmash/{sample}.sm", sample=IDS), expand("diamond_report/bin.{sample}.tsv", sample=IDS), "checkm_plus.txt", "tree/MAGpy/MAGpy.tree.nwk"
 
 rule checkm:
 	input: "mags"
 	output: "checkm.txt"
 	threads: 16
-	shell: "checkm.sh lineage_wf -f checkm.txt -t {threads} -x fa {input} ./checkm"
+	conda: "envs/MAGpy-2.7.yaml"
+	shell: "checkm lineage_wf -f checkm.txt --reduced_tree -t {threads} -x fa {input} ./checkm"
+
+rule checkm_plus:
+	input: "checkm.txt"
+	output: "checkm_plus.txt"
+	threads: 1
+	shell: "add_tax.py {input} > {output}"
 
 rule prodigal:
         input: 'mags/{id}.fa'
@@ -22,21 +31,34 @@ rule diamond:
         output: 'diamond/{id}.diamond.tsv'
         threads: 16
         params:
-                db="/full/path/to/uniprot_trembl.diamond.dmnd",
+                db=config["uniprot_sprot"],
                 of="6 qseqid sseqid stitle pident qlen slen length mismatch gapopen qstart qend sstart send evalue bitscore"
-        shell: "diamond.sh blastp --threads {threads} --max-target-seqs 10 --db {params.db} --query {input} --outfmt {params.of} --out {output}"
+        shell: "diamond blastp --threads {threads} --max-target-seqs 10 --db {params.db} --query {input} --outfmt {params.of} --out {output}"
 
 rule diamond_report:
-	input: 'diamond/{id}.diamond.tsv'
+	input: 
+		tsv='diamond/{id}.diamond.tsv',
+		faa='proteins/{id}.faa'
 	output: 'diamond_report/bin.{id}.tsv', 'diamond_report/con.{id}.tsv'
 	params:
 		outdir="diamond_report"
-	shell: "diamond_report.pl {input} {params.outdir}"
+	shell: "diamond_report.pl {input.tsv} {input.faa} {params.outdir}"
+
+rule diamond_bin_summary:
+        input: expand("diamond_report/bin.{sample}.tsv", sample=IDS)
+        output: "diamond_bin_report.tsv"
+        shell: "echo -e 'name\tnprots\tnhits\tnfull\tgenus\tngenus\tspecies\tnspecies\tavgpid' >> {output} && cat {input} >> {output}"
+
+rule diamond_bin_summary_plus:
+        input: "diamond_bin_report.tsv"
+        output: "diamond_bin_report_plus.tsv"
+        shell: "add_tax_diamond.py {input} > {output}"
+
 
 rule sourmash_sig:
         input: 'mags/{id}.fa'
         output: 'sourmash/{id}.sig'
-        shell: "sourmash.sh compute --scaled 1000 -k 31 -o {output} {input}"
+        shell: "sourmash compute --scaled 1000 -k 31 -o {output} {input}"
 
 rule sourmash_gather:
         input: 'sourmash/{id}.sig'
@@ -44,30 +66,36 @@ rule sourmash_gather:
                 csv='sourmash/{id}.csv',
                 out='sourmash/{id}.sm'
 	params:
-		gb="/full/path/to/genbank-k31.sbt.json",
-	shell: "sourmash.sh gather -k 31 {input} {params.gb} -o {output.csv} > {output.out}"
+		gb=config["sourmash_gbk"]
+	shell: "sourmash gather -k 31 {input} {params.gb} -o {output.csv} > {output.out}"
+
+rule sourmash_report:
+	input: expand("sourmash/{sample}.csv", sample=IDS)
+	output: 'sourmash_report.csv'
+	shell: "echo 'sample,intersect_bp,f_orig_query,f_match,f_unique_to_query,name,filename,md5' >> {output} && sourmash_report.pl {input} >> {output}"
 
 rule pfam_scan:
 	input: 'proteins/{id}.faa'
 	output: 'pfam/{id}.pfam'
 	threads: 8
 	params:
-		pfam="/full/path/to/pfam_dir/"
-	shell: "pfam_scan.sh -outfile {output} -as -cpu {threads} -fasta {input} -dir {params.pfam}"
+		pfam=config["pfam_dir"]
+	shell: "pfam_scan.pl -outfile {output} -as -cpu {threads} -fasta {input} -dir {params.pfam}"
 
 rule phylophlan_link:
 	input: expand("proteins/{sample}.faa", sample=IDS)
-	output: "tree"
+	output: "tree/MAGpy/MAGpy.tree.nwk"
 	threads: 16
+	conda: "envs/MAGpy-2.7.yaml"
 	params:
-		pdir="/full/path/to/phylophlan_dir/"
-	shell: "CWD=`pwd`; ln -s $CWD/proteins {params.pdir}/input/MAGpy && cd {params.pdir} && phylophlan.sh -u MAGpy --nproc {threads} && mv {params.pdir}/output/MAGpy $CWD/tree && cd $CWD && rm {params.pdir}/input/MAGpy"
+		pdir=config["phylophlan_dir"]
+	shell: "CWD=`pwd`;  mkdir {params.pdir}/input/MAGpy && cp proteins/* {params.pdir}/input/MAGpy/; cd {params.pdir} && ./phylophlan.py -u MAGpy --nproc 16 && mv {params.pdir}/output/MAGpy $CWD/tree && cd $CWD && rm -rf {params.pdir}/input/MAGpy && rm -rf {params.pdir}/data/MAGpy"
 
-rule merge:
-        input: expand("pfam/{sample}.pfam", sample=IDS), expand("sourmash/{sample}.sm", sample=IDS), expand("diamond_report/bin.{sample}.tsv", sample=IDS), "checkm.txt", "tree"
-        output: 'output.txt'
-        shell: 'ls {input} >> {output}'
-
-
-
+rule draw_tree:
+	input: 
+		tree="tree/MAGpy/MAGpy.tree.nwk",
+		chpl="checkm_plus.txt"
+	output: "MAGpy.tree.tree.genus.png"
+	conda: "envs/MAGpy-2.7.yaml"
+	shell: "produce_tree.pl {input.chpl} {input.tree}"
 
