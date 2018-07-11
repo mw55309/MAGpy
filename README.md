@@ -1,6 +1,6 @@
 # IMPORTANT
 
-Please don't use this initial version - [use this one instead][https://github.com/WatsonLab/MAGpy]
+Please don't use this initial version - [use this one instead](https://github.com/WatsonLab/MAGpy)
 
 # MAGpy
 MAGpy is a Snakemake pipeline for annotating metagenome-assembled genomes (MAGs) (pronounced **mag-pie**)
